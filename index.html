@@ -1,0 +1,452 @@
+<!DOCTYPE html>
+<html lang="lo">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>FIRE FREE PRO MAX GAME SHOP</title>
+<link rel="stylesheet" href="style.css">
+<link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@400;700;900&family=Noto+Sans+Lao:wght@300;400;600;700&display=swap" rel="stylesheet">
+</head>
+<body>
+
+<!-- ===== LOGIN ===== -->
+<div id="login-screen">
+  <div class="login-box">
+    <div class="logo-area">
+      <div class="logo-icon">🔥</div>
+      <div class="logo-name">FIRE FREE PRO MAX</div>
+      <div class="login-title">ຮ້ານຂາຍ-ຊື້ບັນຊີເກມ</div>
+    </div>
+    <div class="form-group">
+      <label>ຊື່ຜູ້ໃຊ້ / ອີເມລ</label>
+      <input type="text" id="login-user" placeholder="ໃສ່ຊື່ຜູ້ໃຊ້..." />
+    </div>
+    <div class="form-group">
+      <label>ລະຫັດຜ່ານ <span style="color:var(--text2);font-size:11px;">(ຕົວເລກ ≥ 8 ຕົວ)</span></label>
+      <div class="pass-wrap">
+        <input type="password" id="login-pass" placeholder="ໃສ່ຕົວເລກ 8 ຕົວຂຶ້ນໄປ..." oninput="checkPassStrength(this.value)" />
+        <button class="pass-toggle" type="button" onclick="togglePass()">👁</button>
+      </div>
+      <div class="pass-strength-bar"><div class="pass-strength-fill" id="pass-fill"></div></div>
+      <div class="pass-hint" id="pass-hint"></div>
+    </div>
+    <div class="login-notice">⚠️ ຍອດເງິນເລີ່ມຕົ້ນ <b>0 ກີບ</b> ທຸກຄັ້ງທີ່ Login</div>
+    <button class="btn-login" onclick="doLogin()">🔓 ເຂົ້າສູ່ລະບົບ</button>
+    <div class="error-msg" id="login-error"></div>
+    <div class="login-hint">ຍັງບໍ່ມີບັນຊີ? <span onclick="showToast('ຕິດຕໍ່ Admin 📞')">ລົງທະບຽນ</span></div>
+  </div>
+</div>
+
+<!-- ===== MAIN APP ===== -->
+<div id="app">
+
+  <header class="header">
+    <div class="header-logo">
+      <span class="fire">🔥</span>
+      <div class="header-logo-text">FIRE FREE PRO MAX<small>GAME SHOP</small></div>
+    </div>
+    <div class="header-right">
+      <div class="balance-badge">💰 <span id="balance-display">0</span> ກ</div>
+      <div class="profile-dropdown-wrap" id="profile-dropdown-wrap">
+        <div class="user-avatar" onclick="toggleProfileMenu()" id="profile-avatar-btn">
+          <span id="header-avatar-icon">👤</span>
+        </div>
+        <!-- DROPDOWN MENU -->
+        <div class="profile-menu" id="profile-menu">
+          <div class="profile-menu-header">
+            <div class="pm-avatar">🦸</div>
+            <div>
+              <div class="pm-name" id="pm-username">-</div>
+              <div class="pm-id">ID: #FF00123</div>
+              <div class="pm-bal">💰 <span id="pm-bal">0</span> ກ</div>
+            </div>
+          </div>
+          <div class="pm-divider"></div>
+          <div class="pm-item" onclick="closeProfileMenu();navigate('sell')">
+            <span class="pm-icon">💸</span> ຂາຍບັນຊີ
+          </div>
+          <div class="pm-item" onclick="closeProfileMenu();navigate('buy-history')">
+            <span class="pm-icon">📊</span> ປະຫວັດຊື້-ຂາຍ
+          </div>
+          <div class="pm-item" onclick="closeProfileMenu();navigate('topup-history')">
+            <span class="pm-icon">📋</span> ປະຫວັດເຕີມເງິນ
+          </div>
+          <div class="pm-divider"></div>
+          <div class="pm-item pm-logout" onclick="closeProfileMenu();doLogout()">
+            <span class="pm-icon">🚪</span> ອອກຈາກລະບົບ
+          </div>
+        </div>
+      </div>
+    </div>
+  </header>
+
+  <div class="layout">
+
+    <!-- SIDEBAR -->
+    <nav class="sidebar">
+      <div class="profile-section">
+        <div class="profile-avatar-lg">🦸</div>
+        <div>
+          <div class="profile-name" id="sidebar-username">-</div>
+          <div class="profile-id">ID: #FF00123</div>
+          <div class="profile-bal">💰 <span id="sidebar-bal">0</span> ກ</div>
+        </div>
+      </div>
+
+      <div class="nav-section">
+        <div class="nav-section-title">ເມນູຫຼັກ</div>
+        <div class="nav-item active" onclick="navigate('home')"><span class="nav-icon">🏠</span> ໜ້າຫຼັກ</div>
+        <div class="nav-item" onclick="navigate('shop')"><span class="nav-icon">🎮</span> ຮ້ານຄ້າ</div>
+        <div class="nav-item" onclick="navigate('cart')">
+          <span class="nav-icon">🛒</span> ກະຕ່າ
+          <span class="nav-badge" id="cart-nav-badge" style="display:none;">0</span>
+        </div>
+
+      </div>
+
+      <hr class="nav-divider">
+
+      <div class="nav-section">
+        <div class="nav-section-title">ຂໍ້ມູນ</div>
+        <div class="nav-item" onclick="navigate('messages')">
+          <span class="nav-icon">💬</span> ກ່ອງຂໍ້ຄວາມ
+          <span class="nav-badge" id="msg-nav-badge">0</span>
+        </div>
+        <div class="nav-item" onclick="navigate('buy-history')"><span class="nav-icon">📊</span> ປະຫວັດຊື້-ຂາຍ</div>
+        <div class="nav-item" onclick="navigate('topup-history')"><span class="nav-icon">📋</span> ປະຫວັດເຕີມ</div>
+        <div class="nav-item" onclick="navigate('topup')"><span class="nav-icon">💳</span> ເຕີມເງິນ</div>
+      </div>
+
+      <hr class="nav-divider">
+
+      <div class="nav-section">
+        <div class="nav-item" onclick="navigate('sell')"><span class="nav-icon">💸</span> ຂາຍບັນຊີ</div>
+        <div class="nav-item" onclick="navigate('support')"><span class="nav-icon">🎧</span> ບໍລິການລູກຄ້າ</div>
+        <div class="nav-item nav-logout" onclick="doLogout()"><span class="nav-icon">🚪</span> ອອກຈາກລະບົບ</div>
+      </div>
+    </nav>
+
+    <!-- MAIN -->
+    <main class="main">
+
+      <!-- ===== HOME ===== -->
+      <div class="page active" id="page-home">
+        <div class="page-title"><span class="icon">🏠</span> ໜ້າຫຼັກ</div>
+
+        <!-- STATS GRID (real-time) -->
+        <div class="stats-grid">
+          <div class="stat-card">
+            <div class="stat-icon">💰</div>
+            <div class="stat-text">
+              <div class="stat-num" id="stat-bal">0</div>
+              <div class="stat-label">ຍອດເງິນ (ກີບ)</div>
+            </div>
+          </div>
+          <div class="stat-card">
+            <div class="stat-icon">🛒</div>
+            <div class="stat-text">
+              <div class="stat-num" id="stat-cart-count">0</div>
+              <div class="stat-label">ສິນຄ້າໃນກະຕ່າ</div>
+            </div>
+          </div>
+          <div class="stat-card">
+            <div class="stat-icon">✅</div>
+            <div class="stat-text">
+              <div class="stat-num" id="stat-buy-count">0</div>
+              <div class="stat-label">ການຊື້ທັງໝົດ</div>
+            </div>
+          </div>
+          <div class="stat-card">
+            <div class="stat-icon">📤</div>
+            <div class="stat-text">
+              <div class="stat-num" id="stat-sell-count">0</div>
+              <div class="stat-label">ຄຳຂໍຂາຍ</div>
+            </div>
+          </div>
+        </div>
+
+        <!-- ALL 10 PRODUCTS with category filter -->
+        <div class="card">
+          <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:16px;flex-wrap:wrap;gap:10px;">
+            <div class="card-title" style="margin:0;">🎮 ສິນຄ້າທັງໝົດ 10 ລາຍການ</div>
+            <span style="font-size:12px;color:var(--text2);" id="product-count"></span>
+          </div>
+          <div class="game-cat-tabs" id="home-cat-tabs"></div>
+          <div class="product-grid" id="featured-grid"></div>
+        </div>
+      </div>
+
+      <!-- ===== SHOP ===== -->
+      <div class="page" id="page-shop">
+        <div class="page-title"><span class="icon">🎮</span> ຮ້ານຄ້າທັງໝົດ</div>
+        <div class="card">
+          <div class="product-grid" id="shop-grid"></div>
+        </div>
+      </div>
+
+      <!-- ===== CART ===== -->
+      <div class="page" id="page-cart">
+        <div class="page-title"><span class="icon">🛒</span> ກະຕ່າ</div>
+        <div class="card">
+          <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:16px;">
+            <div class="card-title" style="margin:0;">📦 ລາຍການ</div>
+            <button onclick="clearCart()" style="background:rgba(233,69,96,0.15);border:1px solid rgba(233,69,96,0.3);color:var(--accent);border-radius:8px;padding:6px 14px;cursor:pointer;font-family:'Noto Sans Lao',sans-serif;font-size:13px;">🗑 ລ້າງກະຕ່າ</button>
+          </div>
+          <div id="cart-empty-msg" style="flex-direction:column;align-items:center;justify-content:center;padding:48px;color:var(--text2);gap:10px;display:none;">
+            <div style="font-size:52px;">🛒</div>
+            <div style="font-size:16px;">ກະຕ່າຫວ່າງ</div>
+            <button onclick="navigate('home')" style="margin-top:8px;background:linear-gradient(135deg,var(--fire),var(--fire2));border:none;border-radius:10px;padding:10px 24px;color:#fff;font-family:'Noto Sans Lao',sans-serif;font-size:14px;font-weight:700;cursor:pointer;">🎮 ໄປເລືອກສິນຄ້າ</button>
+          </div>
+          <div id="cart-items-list"></div>
+        </div>
+
+        <div id="cart-summary" style="display:none;">
+          <div class="card">
+            <div class="card-title" style="margin-bottom:12px;">🎟 ລະຫັດສ່ວນຫຼຸດ (ລອງ: LAO2024)</div>
+            <div id="active-coupon-badge" style="display:none;align-items:center;gap:10px;background:rgba(0,230,118,0.1);border:1px solid rgba(0,230,118,0.3);border-radius:10px;padding:10px 14px;margin-bottom:12px;">
+              <span>🎉</span>
+              <span class="cp-code" style="color:var(--success);font-weight:700;font-size:14px;"></span>
+              <button onclick="removeCoupon()" style="margin-left:auto;background:rgba(233,69,96,0.15);border:1px solid rgba(233,69,96,0.3);color:var(--accent);border-radius:6px;padding:4px 10px;cursor:pointer;font-size:12px;">✕ ລຶບ</button>
+            </div>
+            <div style="display:flex;gap:8px;margin-bottom:8px;">
+              <input type="text" id="coupon-input" placeholder="ໃສ່ລະຫັດ Coupon..."
+                style="flex:1;background:rgba(255,255,255,0.05);border:1px solid rgba(255,255,255,0.1);border-radius:10px;padding:11px 14px;color:var(--text);font-family:'Noto Sans Lao',sans-serif;font-size:14px;outline:none;"/>
+              <button onclick="applyCoupon()" style="background:linear-gradient(135deg,var(--fire),var(--fire2));border:none;border-radius:10px;padding:11px 20px;color:#fff;font-family:'Noto Sans Lao',sans-serif;font-size:14px;font-weight:700;cursor:pointer;">ໃຊ້</button>
+            </div>
+            <div id="coupon-msg" class="coupon-msg"></div>
+          </div>
+          <div class="card">
+            <div class="card-title" style="margin-bottom:14px;">💰 ສຸດທິ</div>
+            <div class="summary-line"><span>ລວມລາຍການ</span><span id="cart-total-qty">0</span></div>
+            <div class="summary-line"><span>ລາຄາລວມ</span><span id="cart-subtotal">0 ກ</span></div>
+            <div class="summary-line discount-line" id="cart-discount-row" style="display:none;">
+              <span>🎟 ສ່ວນຫຼຸດ</span>
+              <span id="cart-discount-val" style="color:#e74c3c;">-0 ກ</span>
+            </div>
+            <div class="summary-divider"></div>
+            <div class="summary-line total-line">
+              <span>💰 ລວມທັງໝົດ</span>
+              <span id="cart-grand-total" style="color:var(--fire2);font-family:'Orbitron',sans-serif;">0 ກ</span>
+            </div>
+            <div style="background:rgba(0,230,118,0.08);border:1px solid rgba(0,230,118,0.2);border-radius:10px;padding:10px 14px;margin:12px 0;font-size:13px;color:var(--text2);">
+              💡 ຊຳລະສຳເລັດ → <b style="color:var(--success);">ລະຫັດບັນຊີຈະສົ່ງໄປ "ກ່ອງຂໍ້ຄວາມ"</b> ທັນທີ
+            </div>
+            <button onclick="checkoutCart()" class="btn-checkout-cart">✅ ຊຳລະເງິນ &amp; ຮັບລະຫັດ</button>
+          </div>
+        </div>
+      </div>
+
+      <!-- ===== SELL ===== -->
+      <div class="page" id="page-sell">
+        <div class="page-title"><span class="icon">💸</span> ຂາຍບັນຊີ</div>
+        <div class="card">
+          <p style="color:var(--text2);margin-bottom:20px;font-size:14px;">📋 ສົ່ງຄຳຂໍ → <b style="color:var(--fire2);">ອັບເດດ Real-time</b> ໃນ "ປະຫວັດຊື້-ຂາຍ" ທັນທີ</p>
+          <div id="sell-msg" class="sell-msg" style="display:none;"></div>
+          <div class="form-group">
+            <label>ເກມ <span style="color:var(--accent);">*</span></label>
+            <select class="sell-select" id="sell-game">
+              <option value="">-- ເລືອກເກມ --</option>
+              <option>Free Fire MAX</option><option>Free Fire</option>
+              <option>PUBG Mobile</option><option>Mobile Legends</option>
+              <option>Call of Duty Mobile</option><option>Genshin Impact</option>
+              <option>Valorant</option><option>ອື່ນໆ</option>
+            </select>
+          </div>
+          <div class="form-group"><label>Rank / ລະດັບ <span style="color:var(--accent);">*</span></label><input class="topup-input" id="sell-rank" placeholder="ເຊັ່ນ: Diamond, Conqueror..."/></div>
+          <div class="form-group"><label>ລາຄາ (ກີບ) <span style="color:var(--accent);">*</span></label><input class="topup-input" id="sell-price" type="number" placeholder="ເຊັ່ນ: 200000"/></div>
+          <div class="form-group"><label>ລາຍລະອຽດ</label><textarea class="topup-input" id="sell-desc" rows="3" style="height:auto;resize:vertical;" placeholder="Skin, gems, items..."></textarea></div>
+          <div class="form-group"><label>ເບີໂທ <span style="color:var(--accent);">*</span></label><input class="topup-input" id="sell-phone" placeholder="020-XXXX-XXXX"/></div>
+          <button class="btn-primary" onclick="submitSell()">📤 ສົ່ງຄຳຂໍຂາຍ (Real-time)</button>
+          <p style="font-size:12px;color:var(--text2);margin-top:10px;text-align:center;">ຫຼັງສົ່ງ → ເຫັນໃນ "ປະຫວັດຊື້-ຂາຍ → ການຂາຍ" ທັນທີ</p>
+        </div>
+      </div>
+
+      <!-- ===== MESSAGES ===== -->
+      <div class="page" id="page-messages">
+        <div class="page-title"><span class="icon">💬</span> ກ່ອງຂໍ້ຄວາມ</div>
+        <div class="chat-layout">
+          <div class="chat-list">
+            <div class="chat-list-header">📨 ການແຈ້ງເຕືອນ & ລະຫັດ</div>
+            <div id="chat-list-items">
+              <div style="padding:20px;text-align:center;color:var(--text2);font-size:13px;">ຍັງບໍ່ມີຂໍ້ຄວາມ</div>
+            </div>
+            <hr class="nav-divider">
+            <div class="chat-list-header" style="font-size:13px;">💬 Chat Support</div>
+            <div class="chat-item active-chat" onclick="openSupportChat()">
+              <div class="chat-avatar chat-cs">🎧</div>
+              <div class="chat-meta"><div class="chat-name">ທີມຊ່ວຍເຫຼືອ</div><div class="chat-preview">ສະບາຍດີ! ຊ່ວຍຫຍັງໄດ້?</div></div>
+              <div class="chat-time" style="color:var(--success);">●</div>
+            </div>
+          </div>
+          <div class="chat-window">
+            <div class="chat-header">
+              <div class="chat-avatar chat-cs" style="width:36px;height:36px;font-size:16px;">🎧</div>
+              <div><div style="font-weight:600;font-size:15px;">ທີມ Support</div><div style="font-size:12px;color:var(--success);">● ອອນລາຍ</div></div>
+            </div>
+            <div class="chat-messages" id="chat-messages">
+              <div class="msg received">
+                <div class="chat-avatar chat-cs" style="width:32px;height:32px;font-size:14px;flex-shrink:0;">🎧</div>
+                <div><div class="msg-bubble">ສະບາຍດີ! ຍິນດີຕ້ອນຮັບ 🔥 ລະຫັດບັນຊີທີ່ຊຳລະ ຈະສົ່ງມາທາງ Chat ນີ້ທັນທີ!</div><div class="msg-time">--:--</div></div>
+              </div>
+            </div>
+            <div class="chat-input-area">
+              <textarea class="chat-input" id="msg-input" placeholder="ພິມຂໍ້ຄວາມ..." onkeydown="if(event.key==='Enter'&&!event.shiftKey){event.preventDefault();sendMsg();}"></textarea>
+              <button class="btn-send" onclick="sendMsg()">📤</button>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- ===== BUY/SELL HISTORY ===== -->
+      <div class="page" id="page-buy-history">
+        <div class="page-title"><span class="icon">📊</span> ປະຫວັດຊື້-ຂາຍ</div>
+        <div class="live-indicator">🟢 Real-time — ອັບເດດທຸກຄຳສັ່ງ</div>
+        <div class="history-tabs">
+          <button class="tab-btn active" onclick="switchTab(this,'tab-buy')">🛒 ການຊື້</button>
+          <button class="tab-btn" onclick="switchTab(this,'tab-sell-h')">💸 ການຂາຍ</button>
+        </div>
+        <div class="card">
+          <div id="tab-buy" class="history-table-wrap">
+            <table><thead><tr><th>ລະຫັດ</th><th>ສິນຄ້າ</th><th>ເກມ</th><th>ລາຄາ</th><th>ວັນທີ-ເວລາ</th><th>ສະຖານະ</th></tr></thead>
+            <tbody id="buy-history-body"><tr><td colspan="6" style="text-align:center;padding:24px;color:var(--text2);">ຍັງບໍ່ມີປະຫວັດ</td></tr></tbody></table>
+          </div>
+          <div id="tab-sell-h" class="history-table-wrap" style="display:none;">
+            <table><thead><tr><th>ລະຫັດ</th><th>ບັນຊີ</th><th>ເກມ</th><th>ລາຄາ</th><th>ວັນທີ-ເວລາ</th><th>ສະຖານະ</th></tr></thead>
+            <tbody id="sell-history-body"><tr><td colspan="6" style="text-align:center;padding:24px;color:var(--text2);">ຍັງບໍ່ມີປະຫວັດ</td></tr></tbody></table>
+          </div>
+        </div>
+      </div>
+
+      <!-- ===== TOPUP HISTORY ===== -->
+      <div class="page" id="page-topup-history">
+        <div class="page-title"><span class="icon">📋</span> ປະຫວັດເຕີມເງິນ</div>
+        <div class="live-indicator">🟢 Real-time</div>
+        <div class="card">
+          <div class="history-table-wrap">
+            <table><thead><tr><th>ລະຫັດ</th><th>ຈຳນວນ</th><th>ວິທີ</th><th>ວັນທີ-ເວລາ</th><th>ສະຖານະ</th></tr></thead>
+            <tbody id="topup-history-body"><tr><td colspan="5" style="text-align:center;padding:24px;color:var(--text2);">ຍັງບໍ່ມີປະຫວັດ</td></tr></tbody></table>
+          </div>
+        </div>
+      </div>
+
+      <!-- ===== TOPUP ===== -->
+      <div class="page" id="page-topup">
+        <div class="page-title"><span class="icon">💳</span> ເຕີມເງິນ</div>
+        <div class="topup-grid">
+          <div>
+            <div class="card">
+              <div class="card-title">💰 ເລືອກຈຳນວນ (ກີບ)</div>
+              <div class="topup-limit-note">⚠️ ຈຳກັດ: <b>100,000,000 ກ</b> ຕໍ່ຄັ້ງ</div>
+              <div class="topup-amounts">
+                <div class="amount-btn" onclick="selectAmount(this,10000)">10,000</div>
+                <div class="amount-btn" onclick="selectAmount(this,50000)">50,000</div>
+                <div class="amount-btn" onclick="selectAmount(this,100000)">100,000</div>
+                <div class="amount-btn" onclick="selectAmount(this,500000)">500,000</div>
+                <div class="amount-btn" onclick="selectAmount(this,1000000)">1,000,000</div>
+                <div class="amount-btn" onclick="selectAmount(this,100000000)">100,000,000</div>
+              </div>
+              <div class="topup-input-wrap">
+                <input class="topup-input" id="topup-amount" type="number" placeholder="ໃສ່ຈຳນວນ (ສູງສຸດ 100,000,000)..." oninput="updateQR(this.value)" max="100000000"/>
+                <div id="topup-limit-msg" style="font-size:12px;margin-top:6px;min-height:16px;"></div>
+              </div>
+              <div style="margin-bottom:16px;">
+                <div class="card-title">💳 ວິທີຊຳລະ</div>
+                <div class="topup-methods">
+                  <button class="method-btn active" onclick="selectMethod(this,'BCEL One')">🏦 BCEL One</button>
+                  <button class="method-btn" onclick="selectMethod(this,'LDB')">🏦 LDB</button>
+                  <button class="method-btn" onclick="selectMethod(this,'LAO QR')">📱 LAO QR</button>
+                  <button class="method-btn" onclick="selectMethod(this,'ໂອນ')">💸 ໂອນ</button>
+                </div>
+              </div>
+              <input class="topup-input" placeholder="Slip Reference..." />
+              <button class="btn-primary" style="margin-top:12px;" onclick="doTopup()">✅ ຢືນຢັນເຕີມ</button>
+            </div>
+          </div>
+          <div>
+            <div class="card" style="text-align:center;">
+              <div class="card-title" style="justify-content:center;">📱 QR ຊຳລະ</div>
+              <div class="qr-box">
+                <div class="qr-pattern">
+                  <svg viewBox="0 0 200 200" xmlns="http://www.w3.org/2000/svg">
+                    <rect width="200" height="200" fill="white"/>
+                    <rect x="10" y="10" width="60" height="60" fill="#111" rx="4"/><rect x="18" y="18" width="44" height="44" fill="white" rx="2"/><rect x="26" y="26" width="28" height="28" fill="#111" rx="2"/>
+                    <rect x="130" y="10" width="60" height="60" fill="#111" rx="4"/><rect x="138" y="18" width="44" height="44" fill="white" rx="2"/><rect x="146" y="26" width="28" height="28" fill="#111" rx="2"/>
+                    <rect x="10" y="130" width="60" height="60" fill="#111" rx="4"/><rect x="18" y="138" width="44" height="44" fill="white" rx="2"/><rect x="26" y="146" width="28" height="28" fill="#111" rx="2"/>
+                    <rect x="80" y="10" width="8" height="8" fill="#111"/><rect x="96" y="10" width="8" height="8" fill="#111"/><rect x="112" y="10" width="8" height="8" fill="#111"/>
+                    <rect x="80" y="26" width="8" height="8" fill="#111"/><rect x="88" y="34" width="8" height="8" fill="#111"/><rect x="96" y="42" width="8" height="8" fill="#111"/>
+                    <rect x="80" y="80" width="8" height="8" fill="#111"/><rect x="96" y="80" width="8" height="8" fill="#111"/><rect x="112" y="80" width="8" height="8" fill="#111"/>
+                    <rect x="80" y="96" width="8" height="8" fill="#111"/><rect x="104" y="96" width="8" height="8" fill="#111"/>
+                    <rect x="80" y="112" width="8" height="8" fill="#111"/><rect x="88" y="128" width="8" height="8" fill="#111"/>
+                    <rect x="80" y="144" width="8" height="8" fill="#111"/><rect x="96" y="144" width="8" height="8" fill="#111"/>
+                    <rect x="80" y="160" width="8" height="8" fill="#111"/><rect x="104" y="160" width="8" height="8" fill="#111"/>
+                    <rect x="88" y="88" width="24" height="24" fill="#ff4400" rx="4"/>
+                    <text x="100" y="105" text-anchor="middle" font-size="14" fill="white">🔥</text>
+                  </svg>
+                </div>
+                <div class="qr-label">🔥 FIRE FREE PRO MAX</div>
+                <div class="qr-amount-label" id="qr-amount-display">ເລືອກຈຳນວນກ່ອນ</div>
+              </div>
+              <div class="bank-info">
+                <div class="bank-row"><span>ທະນາຄານ</span><span class="bank-val">🏦 BCEL</span></div>
+                <div class="bank-row"><span>ຊື່ບັນຊີ</span><span class="bank-val">FIRE FREE PRO MAX</span></div>
+                <div class="bank-row"><span>ເລກບັນຊີ</span><span class="bank-val">010-3-00123-456</span></div>
+                <div class="bank-row"><span>ຈຳນວນ</span><span class="bank-val" id="bank-amount">---</span></div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- ===== SUPPORT ===== -->
+      <div class="page" id="page-support">
+        <div class="page-title"><span class="icon">🎧</span> ບໍລິການລູກຄ້າ</div>
+        <div class="cs-grid">
+          <div class="cs-card" onclick="navigate('messages')"><div class="cs-icon">💬</div><div class="cs-title">Chat Live</div><div class="cs-desc">ສົນທະນາ Real-time</div><div class="cs-status"><span class="badge badge-success">● ອອນລາຍ</span></div></div>
+          <div class="cs-card" onclick="showToast('📞 020-XXXXXXXX')"><div class="cs-icon">📞</div><div class="cs-title">ໂທລະສັບ</div><div class="cs-desc">020-XXXXXXXX<br>08-22ໂມງ</div><div class="cs-status"><span class="badge badge-success">● ເປີດ</span></div></div>
+          <div class="cs-card" onclick="showToast('FB: FIRE FREE PRO MAX')"><div class="cs-icon">📘</div><div class="cs-title">Facebook</div><div class="cs-desc">Page ຮ້ານ</div><div class="cs-status"><span class="badge badge-info">Page</span></div></div>
+          <div class="cs-card" onclick="showToast('LINE: @firefreepro')"><div class="cs-icon">💚</div><div class="cs-title">LINE</div><div class="cs-desc">@firefreepro 24/7</div><div class="cs-status"><span class="badge badge-success">24/7</span></div></div>
+        </div>
+        <div class="card">
+          <div style="font-size:16px;font-weight:700;margin-bottom:16px;">❓ FAQ</div>
+          <div class="faq-item"><div class="faq-q" onclick="toggleFaq(this)">ລະຫັດບັນຊີຢູ່ໃສ? <span class="faq-arrow">▼</span></div><div class="faq-a">ຫຼັງຊຳລະ → ລະຫັດຈະສົ່ງໄປ "ກ່ອງຂໍ້ຄວາມ" ທັນທີ ພ້ອມ Account Code ແລະ Password</div></div>
+          <div class="faq-item"><div class="faq-q" onclick="toggleFaq(this)">Coupon LAO2024 ໃຊ້ໄດ້ຫຍັງ? <span class="faq-arrow">▼</span></div><div class="faq-a">ສ່ວນຫຼຸດ 5% ທຸກສິນຄ້າ ໃສ່ໃນໜ້າກະຕ່າ</div></div>
+          <div class="faq-item"><div class="faq-q" onclick="toggleFaq(this)">ເຕີມເງິນສູງສຸດເທົ່າໃດ? <span class="faq-arrow">▼</span></div><div class="faq-a">100,000,000 ກ ຕໍ່ຄັ້ງ. ເຕີມຫຼາຍຄັ້ງໄດ້</div></div>
+          <div class="faq-item"><div class="faq-q" onclick="toggleFaq(this)">ເງິນເລີ່ມຕົ້ນ 0 ທຸກຄັ້ງ? <span class="faq-arrow">▼</span></div><div class="faq-a">ແມ່ນ — ທຸກຄັ້ງທີ່ Login ໃໝ່ ຍອດເງິນຈະ reset ເປັນ 0 ກ່ອນ. ກະລຸນາເຕີມເງິນກ່ອນຊື້</div></div>
+        </div>
+      </div>
+
+    </main>
+  </div>
+</div>
+
+<!-- ===== BOTTOM NAV (mobile) ===== -->
+<nav class="bottom-nav" id="bottom-nav">
+  <div class="bottom-nav-item active" onclick="navigate('home');setBnActive(this)" id="bn-home">
+    <span class="bn-icon">🏠</span>
+    <span class="bn-label">ໜ້າຫຼັກ</span>
+  </div>
+  <div class="bottom-nav-item" onclick="navigate('shop');setBnActive(this)" id="bn-shop">
+    <span class="bn-icon">🎮</span>
+    <span class="bn-label">ຮ້ານຄ້າ</span>
+  </div>
+  <div class="bottom-nav-item" onclick="navigate('cart');setBnActive(this)" id="bn-cart">
+    <span class="bn-icon">🛒</span>
+    <span class="bn-label">ກະຕ່າ</span>
+    <span class="bn-badge" id="bn-cart-badge">0</span>
+  </div>
+  <div class="bottom-nav-item" onclick="navigate('topup');setBnActive(this)" id="bn-topup">
+    <span class="bn-icon">💳</span>
+    <span class="bn-label">ເຕີມ</span>
+  </div>
+  <div class="bottom-nav-item" onclick="navigate('messages');setBnActive(this)" id="bn-msg">
+    <span class="bn-icon">💬</span>
+    <span class="bn-label">Chat</span>
+    <span class="bn-badge" id="bn-msg-badge">0</span>
+  </div>
+</nav>
+
+<div class="profile-backdrop" id="profile-backdrop" onclick="closeProfileMenu()"></div>
+<div class="toast" id="toast"></div>
+<script src="script.js"></script>
+</body>
+</html>
